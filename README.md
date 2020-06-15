@@ -1,6 +1,6 @@
 # MATLAB Tool for the Impedance Analyzer 4294A
 
-This *MATLAB* tool offers different functions for working with the **HP/Agilent/Keysight 4294A impedance analyzer**.
+This **MATLAB** tool offers different functions for working with the **HP/Agilent/Keysight 4294A impedance analyzer**.
 
 The following function are implemented:
 * **Read measurement file**
