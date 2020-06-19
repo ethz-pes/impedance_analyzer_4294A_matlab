@@ -38,4 +38,4 @@ The following references describes the impedance analyzer 4294A:
 ## License
 
 * This project is licensed under the **BSD License**, see [LICENSE.md](LICENSE.md).
-* This project is copyrighted by: (c) 2019-2020, ETH Zurich, Power Electronic Systems Laboratory, T. Guillod.
+* This project is copyrighted by: (c) 2016-2020, ETH Zurich, Power Electronic Systems Laboratory, T. Guillod.
