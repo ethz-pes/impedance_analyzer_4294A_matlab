@@ -7,7 +7,7 @@ The following function are implemented:
 * **Get the device tolerances**
 * **Add the tolerances to a measurement**
 
-## Examples
+## Example
 
 The following examples are included:
 * [run_device_tol.m](run_device_tol.m) - Get and plot the device tolerances
