@@ -3,7 +3,7 @@
 ![license - BSD](https://img.shields.io/badge/license-BSD-green)
 ![language - MATLAB](https://img.shields.io/badge/language-MATLAB-blue)
 ![category - power electronics](https://img.shields.io/badge/category-power%20electronics-lightgrey)
-![status - maintained](https://img.shields.io/badge/status-maintained-green)
+![status - unmaintained](https://img.shields.io/badge/status-unmaintained-red)
 
 This **MATLAB** tool offers different functions for working with the **HP/Agilent/Keysight 4294A impedance analyzer**.
 
