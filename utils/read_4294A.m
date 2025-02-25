@@ -20,17 +20,31 @@ assert(ischar(filename), 'invalid file: name')
 % get number of lines
 n = read_line(filename);
 
-% compute the header size
+% define the header size
 n_header_start = 21;
 n_header_mid = 6;
+
+% compute the number of points (total)
 n_tot = n-n_header_start-n_header_mid;
+
+% check the number of points
+if n_tot < 2
+    error('invalid file: number of points')
+end
+if mod(n_tot, 2) == 1
+    error('invalid file: number of points')
+end
+
+% compute the number of points (per channel)
 n_pts = n_tot./2;
-assert(n_tot>=2, 'invalid file: number of points')
-assert(mod(n_tot, 2)==0, 'invalid file: number of points')
+
+% indices of the cell to be extracted
+range_abs = [n_header_start+1, 1, n_header_start+n_pts, 2];
+range_angle = [n_header_start+n_pts+n_header_mid+1, 1, n_header_start+n_pts+n_header_mid+n_pts, 2];
 
 % read the data, without the header
-data_abs = dlmread(filename,'\t', [n_header_start 0 n_header_start+n_pts-1 1]);
-data_angle = dlmread(filename,'\t', [n_header_start+n_pts+n_header_mid 0 n_header_start+n_pts+n_header_mid+n_pts-1 1]);
+data_abs = readmatrix(filename, 'Delimiter', '\t', 'Range', range_abs);
+data_angle = readmatrix(filename, 'Delimiter', '\t', 'Range', range_angle);
 
 % parse the frequency
 assert(all(data_abs(:,1)==data_angle(:,1)), 'invalid file: frequency vector')
@@ -57,10 +71,14 @@ function n = read_line(filename)
 %    Returns:
 %        n (integer): number of lines in the file
 
-fid = fopen(filename);
-data = textscan(fid,'%s','delimiter','\n');
+n = 0;
+fid = fopen(filename, 'r');
+
+while feof(fid)==false
+    fgetl(fid);
+    n = n+1;
+end
+
 fclose(fid);
-assert(length(data)==1, 'invalid file: number of lines');
-n = length(data{1});
 
 end

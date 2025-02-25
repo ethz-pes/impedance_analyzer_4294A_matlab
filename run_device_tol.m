@@ -17,8 +17,8 @@ BW = 5; % bandwidth setting of the impedance analyzer
 V_osc = 500e-3; % oscillator voltage of the impedance analyzer
 
 %% get the ranges
-f_vec = logspace(log10(1.001.*40), log10(0.999.*110e6), 100);
-Z_vec = logspace(log10(1.001.*10e-3), log10(0.999.*100e6), 100);
+f_vec = logspace(log10(100.0), log10(100e6), 100);
+Z_vec = logspace(log10(10e-3), log10(100e6), 100);
 err_vec = logspace(log10(0.01), log10(100.0), 100);
 
 %% compute the device tolerances
@@ -35,11 +35,12 @@ hold('on')
 set(gca, 'xscale', 'log')
 set(gca, 'yscale', 'log')
 set(gca,'ColorScale','log')
-caxis([1e-1 10])
+clim([0.1 10])
 c = colorbar();
-set(c.Label, 'String', 'Abs. Tol. [%]')
+grid('on')
 xlabel('f [Hz]')
 ylabel('Z [Ohm]')
+set(c.Label, 'String', 'Abs. Tol. [%]')
 title('Tolerance / Absolute')
 
 subplot(2,1,2)
@@ -48,11 +49,12 @@ hold('on')
 set(gca, 'xscale', 'log')
 set(gca, 'yscale', 'log')
 set(gca,'ColorScale','log')
-caxis([1e-1 10])
+clim([0.1 10])
 c = colorbar();
-set(c.Label, 'String', 'Angle Tol. [deg]')
+grid('on')
 xlabel('f [Hz]')
 ylabel('Z [Ohm]')
+set(c.Label, 'String', 'Angle Tol. [deg]')
 title('Tolerance / Angle')
 
 end

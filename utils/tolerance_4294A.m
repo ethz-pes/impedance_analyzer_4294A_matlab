@@ -154,7 +154,11 @@ tol_abs = E;
 tol_rad = E;
 
 % detect invalid data
-is_valid = (f>=40.0)&(f<=110e6)&(abs(Z)>=10e-3)&(abs(Z)<=100e6);
+is_valid = true;
+is_valid = is_valid&(f>=(40.0-10.*eps(40.0)));
+is_valid = is_valid&(f<=(110e6+10.*eps(110e6)));
+is_valid = is_valid&(abs(Z)>=(10e-3-10.*eps(10e-3)));
+is_valid = is_valid&(abs(Z)<=(100e6+10.*eps(100e6)));
 
 % check
 validateattributes(tol_abs, {'double'},{'2d', 'nonempty', 'nonnan', 'real', 'finite'});
@@ -173,10 +177,10 @@ function var = assign_cond(var, idx, value)
 %    Returns:
 %        var (matrix): variable with the assigned value
 
-if length(value)==1
+if isscalar(value)
     value = repmat(value, size(var));
 end
-if length(idx)==1
+if isscalar(idx)
     idx = repmat(idx, size(var));
 end
 
