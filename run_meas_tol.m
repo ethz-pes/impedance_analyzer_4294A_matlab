@@ -15,76 +15,99 @@ addpath('utils')
 %% param
 BW = 5; % bandwidth setting of the impedance analyzer
 V_osc = 500e-3; % oscillator voltage of the impedance analyzer
+f_val = [1e3, 1e4, 1e5];
 
 %% read impedance and evaluate tolerances
 [f, Z] = read_4294A('data/impedance.txt');
-
 [tol_abs, tol_rad, is_valid] = tolerance_4294A(f, Z, V_osc, BW);
-assert(all(is_valid==true), 'invalid data');
+assert(all(all(is_valid==true)), 'invalid data (outside the ranges definied in the datasheet)')
 
 Z_tol = impedance_4294A(f, Z, tol_abs, tol_rad);
+
+%% extract the resistance
+R = real(Z);
+R_tol = real(Z_tol);
+
+%% extract the inductance
+L = imag(Z)./(2.*pi.*f);
+L_tol = imag(Z_tol)./(2.*pi.*f);
+
+%% evaluate the tolerance
+for f_tmp=f_val
+    [R_val, R_rel] = extract_data(f, R, R_tol, f_tmp);
+    [L_val, L_rel] = extract_data(f, L, L_tol, f_tmp);
+    fprintf('f = %.3f kHz\n', 1e-3.*f_tmp)
+    fprintf('    R = %.3f mOhm / tol = %.3f %%\n', 1e3.*R_val, 1e2.*R_rel)
+    fprintf('    L = %.3f uH / tol = %.3f %%\n', 1e6.*L_val, 1e2.*L_rel)
+end
 
 %% plot impedance measurements and tolerances
 figure()
 
-subplot(2,2,1)
-plot_data(f, abs(Z), abs(Z_tol))
-set(gca,'xscale','log')
-set(gca,'yscale','log')
-grid('on')
-xlim([1e3 100e3])
-xlabel('f [Hz]')
-ylabel('Z [Ohm]')
-title('Impedance / Abs')
-
-subplot(2,2,2)
-plot_data(f, rad2deg(angle(Z)), rad2deg(angle(Z_tol)))
+subplot(2,1,1)
+plot_data(f, 1e3.*R, 1e3.*R_tol)
 set(gca,'xscale','log')
 grid('on')
-xlim([1e3 100e3])
-xlabel('f [Hz]')
-ylabel('Z [deg]')
-title('Impedance / Angle')
-
-subplot(2,2,3)
-plot_data(f, 1e3.*real(Z), 1e3.*real(Z_tol))
-set(gca,'xscale','log')
-grid('on')
-xlim([1e3 100e3])
 xlabel('f [Hz]')
 ylabel('R [mOhm]')
-title('Impedance')
+title('Resistance')
 
-subplot(2,2,4)
-plot_data(f, 1e6.*imag(Z)./(2.*pi.*f), 1e6.*imag(Z_tol)./(2.*pi.*f))
+subplot(2,1,2)
+plot_data(f, 1e6.*L, 1e6.*L_tol)
 set(gca,'xscale','log')
-xlim([1e3 100e3])
 grid('on')
 xlabel('f [Hz]')
 ylabel('L [uH]')
-title('Impedance')
+title('Inductance')
 
 end
 
-function plot_data(x, y, y_tol)
-% Plot a line with the tolerance.
+function [v_val, v_rel] = extract_data(f, v, v_tol, f_val)
+% Extract the value and tolerance at a particular frequency.
 %
 %    Parameters:
-%        x (vector): x vector for the line and tolerances
-%        y (vector): y vector for the line
-%        y_tol (matrix): y matrix for the tolerances
+%        f (vector): frequency vector
+%        v (vector): data vector with the nominal values
+%        v_tol (matrix): data matrix for the tolerances
+%        f_val (float): frequency for the evaluation
+%
+%    Returns:
+%        v_val (float): nominal value
+%        v_rel (float): relative error
 
 % get min/max value
-y_tol_max = max(y_tol, [], 1);
-y_tol_min = min(y_tol, [], 1);
+v_tol_max = max(v_tol, [], 1);
+v_tol_min = min(v_tol, [], 1);
+
+% interp the data
+v_val = interp1(log10(f), v, log10(f_val));
+v_min = interp1(log10(f), v_tol_min, log10(f_val));
+v_max = interp1(log10(f), v_tol_max, log10(f_val));
+
+% compute the relative error
+v_rel = (v_max-v_min)./(2.0.*v_val);
+
+end
+
+function plot_data(f, v, v_tol)
+% Plot a curve with the tolerance.
+%
+%    Parameters:
+%        f (vector): frequency vector
+%        v (vector): data vector with the nominal values
+%        v_tol (matrix): data matrix for the tolerances
+
+% get min/max value
+v_tol_max = max(v_tol, [], 1);
+v_tol_min = min(v_tol, [], 1);
 
 % get min/max data
-x_all = [x, fliplr(x)];
-y_min_max = [y_tol_min, fliplr(y_tol_max)];
+f_extend = [f, fliplr(f)];
+v_min_max = [v_tol_min, fliplr(v_tol_max)];
 
 % plot data
-fill(x_all, y_min_max, 'k', 'LineStyle', 'none', 'FaceAlpha', 0.2, 'FaceColor', 'r');
+fill(f_extend, v_min_max, 'k', 'LineStyle', 'none', 'FaceAlpha', 0.2, 'FaceColor', 'r');
 hold('on')
-plot(x, y, 'r')
+plot(f, v, 'r', 'LineWidth', 1.0)
 
 end

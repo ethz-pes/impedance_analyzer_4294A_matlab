@@ -9,7 +9,7 @@ function [tol_abs, tol_rad, is_valid] = tolerance_4294A(f, Z, V_osc, BW)
 %        f (matrix): frequency matrix
 %        Z (matrix): impedance matrix
 %        V_osc (float): oscillator voltage used for the measurement
-%        BW (float): bandwidth setting used for the measurement
+%        BW (integer): bandwidth setting used for the measurement
 %
 %    Returns:
 %        tol_abs (matrix): tolerance of the amplitude
@@ -21,13 +21,13 @@ function [tol_abs, tol_rad, is_valid] = tolerance_4294A(f, Z, V_osc, BW)
 % assert
 validateattributes(f, {'double'},{'2d', 'nonempty', 'nonnan', 'real', 'finite'});
 validateattributes(Z, {'double'},{'2d', 'nonempty', 'nonnan', 'finite'});
-validateattributes(V_osc, {'double'},{'scalar', 'nonempty', 'nonnan', 'real','finite'});
-validateattributes(BW, {'double'},{'scalar', 'nonempty', 'nonnan', 'real','finite'});
-assert(V_osc>=5e-3, 'invalid data')
-assert(V_osc<=1000e-3, 'invalid data')
-assert(BW>=1, 'invalid data')
-assert(BW<=5, 'invalid data')
-assert(all(size(f)==size(Z)), 'invalid data')
+validateattributes(V_osc, {'double'},{'scalar', 'nonempty', 'nonnan', 'real', 'finite'});
+validateattributes(BW, {'double'},{'scalar', 'nonempty', 'nonnan', 'integer', 'finite'});
+assert(V_osc>=5e-3, 'invalid data (oscillator voltage is too low)')
+assert(V_osc<=1000e-3, 'invalid data (oscillator voltage is too high)')
+assert(BW>=1, 'invalid data (bandwidth setting should be greater than one)')
+assert(BW<=5, 'invalid data (bandwidth setting should be lower than five)')
+assert(all(size(f)==size(Z)), 'invalid data (frequency and impedance vector should have the same size)')
 
 % get dimension
 dim = size(f);
@@ -148,17 +148,15 @@ Y_o_p = Y_ol+K_bw.*K_yosc.*(Y_odc+Y_o);
 
 % get tolerance for amplitude and phase
 E = E_p_p+100.0.*((Z_s_p./abs(Z))+(Y_o_p.*abs(Z)));
-E = E./100.0;
-
-tol_abs = E;
-tol_rad = E;
+tol_abs = E./100.0;
+tol_rad = E./100.0;
 
 % detect invalid data
 is_valid = true;
-is_valid = is_valid&(f>=(40.0-10.*eps(40.0)));
-is_valid = is_valid&(f<=(110e6+10.*eps(110e6)));
-is_valid = is_valid&(abs(Z)>=(10e-3-10.*eps(10e-3)));
-is_valid = is_valid&(abs(Z)<=(100e6+10.*eps(100e6)));
+is_valid = is_valid&(f>=(40.0-eps(40.0)));
+is_valid = is_valid&(f<=(110e6+eps(110e6)));
+is_valid = is_valid&(abs(Z)>=(10e-3-eps(10e-3)));
+is_valid = is_valid&(abs(Z)<=(100e6+eps(100e6)));
 
 % check
 validateattributes(tol_abs, {'double'},{'2d', 'nonempty', 'nonnan', 'real', 'finite'});

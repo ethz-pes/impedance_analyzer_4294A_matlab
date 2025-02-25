@@ -20,11 +20,11 @@ V_osc = 500e-3; % oscillator voltage of the impedance analyzer
 f_vec = logspace(log10(100.0), log10(100e6), 100);
 Z_vec = logspace(log10(10e-3), log10(100e6), 100);
 err_vec = logspace(log10(0.01), log10(100.0), 100);
+[f_mat, Z_mat] = meshgrid(f_vec, Z_vec);
 
 %% compute the device tolerances
-[f_mat, Z_mat] = meshgrid(f_vec, Z_vec);
 [tol_abs, tol_rad, is_valid] = tolerance_4294A(f_mat, Z_mat, V_osc, BW);
-assert(all(all(is_valid==true)), 'invalid data')
+assert(all(all(is_valid==true)), 'invalid data (outside the ranges definied in the datasheet)')
 
 %% plot device tolerances
 figure()

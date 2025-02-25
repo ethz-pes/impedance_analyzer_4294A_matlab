@@ -18,7 +18,7 @@ This tool is developed by the **Power Electronic Systems Laboratory at ETH Zuric
 
 The following examples are included:
 * [run_device_tol.m](run_device_tol.m) - Get and plot the device tolerances
-* [run_meas_tol.m](run_meas_tol.m) - Read a measurement file, add the tolerances, and plot
+* [run_meas_tol.m](run_meas_tol.m) - Read a measurement and compute the tolerances
 
 <p float="middle">
     <img src="readme_img/device_tol.png" width="350">
@@ -28,7 +28,7 @@ The following examples are included:
 ## Compatibility
 
 The tool is tested with the following MATLAB setup:
-* Tested with MATLAB R2018b or 2019a
+* Tested with MATLAB R2018b / 2019a / 2024b
 * No toolboxes are required.
 * Compatibility with GNU Octave not tested but probably easy to achieve.
 

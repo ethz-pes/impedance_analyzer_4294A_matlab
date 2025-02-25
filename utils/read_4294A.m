@@ -15,7 +15,8 @@ function [f, Z] = read_4294A(filename)
 %    (c) 2016-2020, ETH Zurich, Power Electronic Systems Laboratory, T. Guillod
 
 % check
-assert(ischar(filename), 'invalid file: name')
+assert(ischar(filename), 'invalid file: file name should be string')
+assert(isfile(filename), 'invalid file: file cannot be found')
 
 % get number of lines
 n = read_line(filename);
@@ -28,12 +29,8 @@ n_header_mid = 6;
 n_tot = n-n_header_start-n_header_mid;
 
 % check the number of points
-if n_tot < 2
-    error('invalid file: number of points')
-end
-if mod(n_tot, 2) == 1
-    error('invalid file: number of points')
-end
+assert(n_tot>=2, 'invalid file: invalid number of lines')
+assert(mod(n_tot, 2)==0, 'invalid file: invalid number of lines')
 
 % compute the number of points (per channel)
 n_pts = n_tot./2;
@@ -46,8 +43,10 @@ range_angle = [n_header_start+n_pts+n_header_mid+1, 1, n_header_start+n_pts+n_he
 data_abs = readmatrix(filename, 'Delimiter', '\t', 'Range', range_abs);
 data_angle = readmatrix(filename, 'Delimiter', '\t', 'Range', range_angle);
 
+% check size
+assert(all(size(data_abs)==size(data_angle)), 'invalid data (amplitude and angle vector should have the same size)')
+
 % parse the frequency
-assert(all(data_abs(:,1)==data_angle(:,1)), 'invalid file: frequency vector')
 f = (data_abs(:,1).'+data_angle(:,1).')./2.0;
 
 % parse the complex impedance
@@ -58,7 +57,7 @@ Z = Z_abs.*exp(1i.*deg2rad(Z_deg));
 % check
 validateattributes(f, {'double'},{'row', 'nonempty', 'nonnan', 'real', 'finite'});
 validateattributes(Z, {'double'},{'row', 'nonempty', 'nonnan', 'finite'});
-assert(all(size(f)==size(Z)), 'invalid data')
+assert(all(size(f)==size(Z)), 'invalid data (frequency and impedance vector should have the same size)')
 
 end
 

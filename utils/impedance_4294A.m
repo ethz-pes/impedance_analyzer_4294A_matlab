@@ -23,9 +23,9 @@ validateattributes(f, {'double'},{'row', 'nonempty', 'nonnan', 'real', 'finite'}
 validateattributes(Z, {'double'},{'row', 'nonempty', 'nonnan','finite'});
 validateattributes(tol_abs, {'double'},{'row', 'nonempty', 'nonnan', 'real', 'finite'});
 validateattributes(tol_rad, {'double'},{'row', 'nonempty', 'nonnan', 'real', 'finite'});
-assert(all(size(f)==size(Z)), 'invalid data')
-assert(all(size(f)==size(tol_abs)), 'invalid data')
-assert(all(size(f)==size(tol_rad)), 'invalid data')
+assert(all(size(f)==size(Z)), 'invalid data (frequency and impedance vector should have the same size)')
+assert(all(size(f)==size(tol_abs)), 'invalid data (frequency and tolerance vector should have the same size)')
+assert(all(size(f)==size(tol_rad)), 'invalid data (frequency and tolerance vector should have the same size)')
 
 % convert to abs/rad
 Z_abs = abs(Z);
