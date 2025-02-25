@@ -8,9 +8,15 @@
 This **MATLAB** tool offers different functions for working with the **HP/Agilent/Keysight 4294A impedance analyzer**.
 
 The following functions are implemented:
-* **Read measurement file**
-* **Get the device tolerances**
-* **Add the tolerances to a measurement**
+* **Read the measured data (ASCII format)**
+* **Get the device tolerances (amplitude and angle)**
+* **Computw the tolerances for the measured data**
+
+The following configuration is considered:
+* Bandwidth setting can be chosen
+* Oscillator voltage can be chosen
+* The bias level is assumed to be zero
+* The standard 16047E adapter is used
 
 This tool is developed by the **Power Electronic Systems Laboratory at ETH Zurich** and is available under the **BSD License**. The code is also available on the ETH Data Archive.
 

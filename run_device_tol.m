@@ -19,7 +19,7 @@ V_osc = 500e-3; % oscillator voltage of the impedance analyzer
 %% get the ranges
 f_vec = logspace(log10(100.0), log10(100e6), 100);
 Z_vec = logspace(log10(10e-3), log10(100e6), 100);
-err_vec = logspace(log10(0.01), log10(100.0), 100);
+err_vec = logspace(log10(0.01), log10(10.0), 100);
 [f_mat, Z_mat] = meshgrid(f_vec, Z_vec);
 
 %% compute the device tolerances
@@ -35,7 +35,8 @@ hold('on')
 set(gca, 'xscale', 'log')
 set(gca, 'yscale', 'log')
 set(gca,'ColorScale','log')
-clim([0.1 10])
+grid('on')
+clim([0.1 10.0])
 c = colorbar();
 grid('on')
 xlabel('f [Hz]')
@@ -49,9 +50,9 @@ hold('on')
 set(gca, 'xscale', 'log')
 set(gca, 'yscale', 'log')
 set(gca,'ColorScale','log')
-clim([0.1 10])
-c = colorbar();
 grid('on')
+clim([0.1 10.0])
+c = colorbar();
 xlabel('f [Hz]')
 ylabel('Z [Ohm]')
 set(c.Label, 'String', 'Angle Tol. [deg]')

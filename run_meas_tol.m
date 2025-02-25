@@ -32,7 +32,7 @@ R_tol = real(Z_tol);
 L = imag(Z)./(2.*pi.*f);
 L_tol = imag(Z_tol)./(2.*pi.*f);
 
-%% evaluate the tolerance
+%% evaluate the tolerances
 for f_tmp=f_val
     [R_val, R_rel] = extract_data(f, R, R_tol, f_tmp);
     [L_val, L_rel] = extract_data(f, L, L_tol, f_tmp);
@@ -47,6 +47,7 @@ figure()
 subplot(2,1,1)
 plot_data(f, 1e3.*R, 1e3.*R_tol)
 set(gca,'xscale','log')
+set(gca,'yscale','lin')
 grid('on')
 xlabel('f [Hz]')
 ylabel('R [mOhm]')
@@ -55,6 +56,7 @@ title('Resistance')
 subplot(2,1,2)
 plot_data(f, 1e6.*L, 1e6.*L_tol)
 set(gca,'xscale','log')
+set(gca,'yscale','lin')
 grid('on')
 xlabel('f [Hz]')
 ylabel('L [uH]')
@@ -109,5 +111,6 @@ v_min_max = [v_tol_min, fliplr(v_tol_max)];
 fill(f_extend, v_min_max, 'k', 'LineStyle', 'none', 'FaceAlpha', 0.2, 'FaceColor', 'r');
 hold('on')
 plot(f, v, 'r', 'LineWidth', 1.0)
+hold('on')
 
 end
