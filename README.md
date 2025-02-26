@@ -43,6 +43,7 @@ The tool is tested with the following MATLAB setup:
 The following references describe the impedance analyzer 4294A:
 * Agilent 4294A Precision Impedance Analyzer, Operation Manual, 2003
 * Agilent 4294A Precision Impedance Analyzer, Data Sheet, 2008
+* Impedance Measurement Handbook, Keysight Technologies, 2014
 
 ## Author
 
