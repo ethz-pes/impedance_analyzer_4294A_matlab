@@ -24,6 +24,8 @@ err_vec = logspace(log10(0.01), log10(10.0), 100);
 
 %% compute the device tolerances
 [tol_abs, tol_rad, is_valid] = tolerance_4294A(f_mat, Z_mat, V_osc, BW);
+
+%% chek the range validity
 assert(all(all(is_valid==true)), 'invalid data (outside the ranges definied in the datasheet)')
 
 %% plot device tolerances

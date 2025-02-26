@@ -15,14 +15,28 @@ addpath('utils')
 %% param
 BW = 5; % bandwidth setting of the impedance analyzer
 V_osc = 500e-3; % oscillator voltage of the impedance analyzer
-f_val = [1e3, 1e4, 1e5];
+Rs = 0.5e-3; % tolerance on the series resistance of the fixture
+Ls = 5e-9; % tolerance on the series inductance of the fixture
+Cp = 1e-12; % tolerance on the parallel capacitance of the fixture
+f_val = [1e3, 1e4, 1e5]; % frequency where the results should be extracted
+
+%% read the measurements
+[f, Z] = read_4294A('data/impedance.txt');
 
 %% read impedance and evaluate tolerances
-[f, Z] = read_4294A('data/impedance.txt');
 [tol_abs, tol_rad, is_valid] = tolerance_4294A(f, Z, V_osc, BW);
+
+%% chek the range validity
 assert(all(all(is_valid==true)), 'invalid data (outside the ranges definied in the datasheet)')
 
-Z_tol = impedance_4294A(f, Z, tol_abs, tol_rad);
+%% init the tolerance with the nominal values
+Z_tol = Z;
+
+%% add the device tolerances
+Z_tol = impedance_4294A(f, Z_tol, tol_abs, tol_rad);
+
+%% add the fixture tolerances
+Z_tol = fixture_4294A(f, Z_tol, Rs, Ls, Cp);
 
 %% extract the resistance
 R = real(Z);

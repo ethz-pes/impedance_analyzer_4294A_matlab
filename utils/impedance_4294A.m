@@ -1,15 +1,12 @@
 function Z_tol = impedance_4294A(f, Z, tol_abs, tol_rad)
-% Get the impedance measurement tolerance for the HP/Agilent/Keysight 4294A.
+% Add the impact of the device tolerances on the measurements.
 %
-%    Get all the worst-case combinations between amplitude and phase errors:
-%        - min amplitude / min phase
-%        - min amplitude / max phase
-%        - max amplitude / min phase
-%        - max amplitude / max phase
+%    Get all the worst-case combinations between amplitude and phase errors.
+%    Return a matrix with all the possible error combinations.
 %
 %    Parameters:
 %        f (vector): frequency vector
-%        Z (vector): complex impedance vector
+%        Z (matrix): matrix with the complex impedances
 %        tol_abs (vector): tolerance of the amplitude
 %        tol_rad (vector): tolerance of the phase
 %
@@ -20,38 +17,27 @@ function Z_tol = impedance_4294A(f, Z, tol_abs, tol_rad)
 
 % check
 validateattributes(f, {'double'},{'row', 'nonempty', 'nonnan', 'real', 'finite'});
-validateattributes(Z, {'double'},{'row', 'nonempty', 'nonnan','finite'});
+validateattributes(Z, {'double'},{'2d', 'nonempty', 'nonnan','finite'});
 validateattributes(tol_abs, {'double'},{'row', 'nonempty', 'nonnan', 'real', 'finite'});
 validateattributes(tol_rad, {'double'},{'row', 'nonempty', 'nonnan', 'real', 'finite'});
-assert(all(size(f)==size(Z)), 'invalid data (frequency and impedance vector should have the same size)')
-assert(all(size(f)==size(tol_abs)), 'invalid data (frequency and tolerance vector should have the same size)')
-assert(all(size(f)==size(tol_rad)), 'invalid data (frequency and tolerance vector should have the same size)')
+assert(size(f, 2)==size(Z, 2), 'invalid data (invalid vector size)')
 
-% convert to abs/rad
-Z_abs = abs(Z);
-Z_rad = angle(Z);
+% span the uncertainties
+[idx_vec, tol_abs_vec, tol_rad_vec] = ndgrid(1:size(Z, 1), [-1, +1], [-1, +1]);
+idx_vec = idx_vec(:);
+Z_tol = Z(idx_vec, :);
+tol_abs_vec = tol_abs_vec(:);
+tol_rad_vec = tol_rad_vec(:);
 
-% get the worst cases combinations
-Z_tol(1,:) = get_Z(Z_abs.*(1+tol_abs), Z_rad+tol_rad);
-Z_tol(2,:) = get_Z(Z_abs.*(1-tol_abs), Z_rad+tol_rad);
-Z_tol(3,:) = get_Z(Z_abs.*(1+tol_abs), Z_rad-tol_rad);
-Z_tol(4,:) = get_Z(Z_abs.*(1-tol_abs), Z_rad-tol_rad);
+% add the tolerances
+Z_abs = abs(Z_tol).*(1+tol_abs_vec.*tol_abs);
+Z_angle = angle(Z_tol)+tol_rad_vec.*tol_rad;
+
+% assemble the impedance
+Z_tol = Z_abs.*exp(1i.*Z_angle);
 
 % check
 validateattributes(Z_tol, {'double'},{'2d', 'nonempty', 'nonnan', 'finite'});
-
-end
-
-function Z = get_Z(Z_abs, Z_rad)
-% Combine amplitude and phase into a complex impedance.
-%
-%    Parameters:
-%        Z_abs (vector): impedance amplitude
-%        Z_rad (vector): impedance phase
-%
-%    Returns:
-%        Z (vector): complex impedance
-
-Z = Z_abs.*exp(1i.*Z_rad);
+assert(size(f, 2)==size(Z_tol, 2), 'invalid data (frequency and impedance vector should have the same size)')
 
 end

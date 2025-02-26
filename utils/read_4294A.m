@@ -1,7 +1,7 @@
 function [f, Z] = read_4294A(filename)
-% Read (ASCII) files from HP/Agilent/Keysight 4294A impedance analyzer.
+% Read files from HP/Agilent/Keysight 4294A impedance analyzer.
 %
-%    Read frequency sweep files.
+%    Read the frequency sweep files ((ASCII format).
 %    First dataset is the amplitude of the impedance.
 %    Second dataset is the phase of the impedance.
 %
@@ -57,7 +57,7 @@ Z = Z_abs.*exp(1i.*deg2rad(Z_deg));
 % check
 validateattributes(f, {'double'},{'row', 'nonempty', 'nonnan', 'real', 'finite'});
 validateattributes(Z, {'double'},{'row', 'nonempty', 'nonnan', 'finite'});
-assert(all(size(f)==size(Z)), 'invalid data (frequency and impedance vector should have the same size)')
+assert(length(f)==length(Z), 'invalid data (frequency and impedance vector should have the same size)')
 
 end
 

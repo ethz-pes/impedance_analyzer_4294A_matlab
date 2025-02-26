@@ -1,9 +1,9 @@
 function [tol_abs, tol_rad, is_valid] = tolerance_4294A(f, Z, V_osc, BW)
-% Get the device tolerance for the HP/Agilent/Keysight 4294A.
+% Get the device tolerances for the HP/Agilent/Keysight 4294A.
 %
-%    Take the formula from the operation manual.
+%    The formulas from the operation manual are used.
 %    Different oscillator voltage and bandwidth settings are accepted.
-%    The default test fixture (16047E) is accepted.
+%    The default test fixture (16047E) is considered.
 %
 %    Parameters:
 %        f (matrix): frequency matrix
@@ -27,7 +27,7 @@ assert(V_osc>=5e-3, 'invalid data (oscillator voltage is too low)')
 assert(V_osc<=1000e-3, 'invalid data (oscillator voltage is too high)')
 assert(BW>=1, 'invalid data (bandwidth setting should be greater than one)')
 assert(BW<=5, 'invalid data (bandwidth setting should be lower than five)')
-assert(all(size(f)==size(Z)), 'invalid data (frequency and impedance vector should have the same size)')
+assert(size(f, 2)==size(Z, 2), 'invalid data (invalid vector size)')
 
 % get dimension
 dim = size(f);
@@ -161,6 +161,8 @@ is_valid = is_valid&(abs(Z)<=(100e6+eps(100e6)));
 % check
 validateattributes(tol_abs, {'double'},{'2d', 'nonempty', 'nonnan', 'real', 'finite'});
 validateattributes(tol_rad, {'double'},{'2d', 'nonempty', 'nonnan', 'real', 'finite'});
+assert(size(f, 2)==size(tol_abs, 2), 'invalid data (invalid vector size)')
+assert(size(f, 2)==size(tol_rad, 2), 'invalid data (invalid vector size)')
 
 end
 
