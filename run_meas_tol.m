@@ -15,9 +15,9 @@ addpath('utils')
 %% param
 BW = 5; % bandwidth setting of the impedance analyzer
 V_osc = 500e-3; % oscillator voltage of the impedance analyzer
-Rs = 0.5e-3; % tolerance on the series resistance of the fixture
-Ls = 5e-9; % tolerance on the series inductance of the fixture
-Cp = 1e-12; % tolerance on the parallel capacitance of the fixture
+Rs = 250e-6; % tolerance on the series resistance of the fixture
+Ls = 3e-9; % tolerance on the series inductance of the fixture
+Cp = 100e-15; % tolerance on the parallel capacitance of the fixture
 f_val = [1e3, 1e4, 1e5]; % frequency where the results should be extracted
 
 %% read the measurements
