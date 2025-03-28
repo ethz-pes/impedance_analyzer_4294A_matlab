@@ -18,8 +18,6 @@ The following configuration is considered:
 * The bias level is assumed to be zero
 * The standard 16047E adapter is used
 
-This tool is developed by the **Power Electronic Systems Laboratory at ETH Zurich** and is available under the **BSD License**. The code is also available on the ETH Data Archive.
-
 ## Example
 
 The following examples are included:
